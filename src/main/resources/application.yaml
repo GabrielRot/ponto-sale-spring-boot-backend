@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: pontosale
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ponto_sale
+    username: "pontosale_adm"
+    password: "H3@rtDB@#00"
+    driver-class-name: org.postgresql.Driver
+
+api:
+  prefix: /api/v1
+  face-service-endpoint: http://localhost:5000/api/v1
+
+jwt:
+  secret: 8f25913ad0c9e8450acc6bb52b05c911
+
+server:
+  address: 0.0.0.0
+  port: 8080

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: ponto_sale_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgres://db:5432/pontosale
+      SPRING_DATASOURCE_USERNAME: pontosale_adm
+      SPRING_DATASOURCE_PASSWORD: "H3@rtDB@#00"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: ponto_sale_db
+    environment:
+      POSTGRES_DB: ponto_sale
+      POSTGRES_USER: pontosale_adm
+      POSTGRES_PASSWORD: "H3@rtDB@#00"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
