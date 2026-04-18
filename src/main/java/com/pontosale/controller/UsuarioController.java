@@ -22,6 +22,11 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+//    @GetMapping(value = "/usuario")
+//    public ResponseEntity<List<Usuario>> findAll() {
+//        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.)
+//    }
+
     @PostMapping(value = "/usuario")
     public ResponseEntity<?> cadastrarUsuario(
             @RequestParam String nome,
@@ -64,7 +69,7 @@ public class UsuarioController {
         byte[] image = file.getBytes();
 
         if (usuarioService.logTimePoint(image, email)) {
-            return  ResponseEntity.ok().build();
+            return  ResponseEntity.status(HttpStatus.OK).build();
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

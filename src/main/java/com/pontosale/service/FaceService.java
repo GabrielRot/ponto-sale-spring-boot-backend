@@ -43,9 +43,11 @@ public class FaceService {
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
+        System.out.println("chamou");
+
         ResponseEntity<Boolean> response = restTemplate.postForEntity(url, request, Boolean.class);
 
-        System.out.print(response.getBody());
+        System.out.println(response.getBody());
 
         return response.getBody() != null && response.getBody();
     }

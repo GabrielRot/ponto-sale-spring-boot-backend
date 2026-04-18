@@ -11,6 +11,9 @@ public interface PontoRepository extends JpaRepository<Ponto, Long> {
 
     List<Ponto> findAllByUsuario(Usuario usuario);
 
-    Optional<Ponto> getByUsuarioAndDataHoraFechamentoIsEmpty(Usuario usuario);
+    Optional<Ponto> getByUsuarioAndDataHoraFechamentoIsNull(Usuario usuario);
 
+    Ponto findByIdAndUsuario(Long id, Usuario usuario);
+
+    List<Ponto> findAllByUsuarioAndDataHoraFechamentoIsNotNull(Usuario usuario);
 }

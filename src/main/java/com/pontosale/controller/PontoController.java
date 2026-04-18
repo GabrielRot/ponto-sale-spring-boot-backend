@@ -1,7 +1,9 @@
 package com.pontosale.controller;
 
+import com.pontosale.dto.PontoEditResponseDTO;
 import com.pontosale.dto.PontoSaveDTO;
 import com.pontosale.dto.PontoUpdateDTO;
+import com.pontosale.dto.PontosRegistradosResponseDTO;
 import com.pontosale.entity.Ponto;
 import com.pontosale.entity.Usuario;
 import com.pontosale.service.PontoService;
@@ -14,12 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "${api.prefix}/ponto")
+@RequestMapping(value = "${api.prefix}/ponto")   
 public class PontoController {
 
     @Autowired
@@ -28,8 +31,8 @@ public class PontoController {
     @Autowired
     UsuarioService usuarioService;
 
-    @GetMapping(value = "/ponto")
-    public ResponseEntity<List<Ponto>> getAllPonto(Authentication authentication) {
+    @GetMapping(value = "/pontos-user")
+    public ResponseEntity<List<PontosRegistradosResponseDTO>> getAllPontoByUser(Authentication authentication) {
         final String email = authentication.getName();
 
         Usuario usuario = usuarioService.findByEmail(email).get();
@@ -38,7 +41,44 @@ public class PontoController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(pontoService.getPontos(usuario));
+        List<Ponto> pontos = pontoService.getAllPontoByUser(usuario);
+        List<PontosRegistradosResponseDTO> pontosRegistradosResponseDTOS = new ArrayList<>();
+
+        pontos.forEach(ponto -> {
+            PontosRegistradosResponseDTO pontosRegistradosResponseDTO = new PontosRegistradosResponseDTO();
+
+            pontosRegistradosResponseDTO.setId(ponto.getId());
+            pontosRegistradosResponseDTO.setDataHoraAbertura(ponto.getDataHoraAbertura());
+            pontosRegistradosResponseDTO.setDataHoraFechamento(ponto.getDataHoraFechamento());
+            pontosRegistradosResponseDTO.setTipoInsercaoPonto(ponto.getTipoInsercaoPonto());
+
+            pontosRegistradosResponseDTOS.add(pontosRegistradosResponseDTO);
+        });
+
+        return ResponseEntity.status(HttpStatus.OK).body(pontosRegistradosResponseDTOS);
+    }
+
+    @GetMapping(value = "/ponto/{id}")
+    public ResponseEntity<PontoEditResponseDTO> getPontoById(@PathVariable Long id, Authentication authentication) {
+        String email = authentication.getName();
+
+        Usuario usuario = usuarioService.findByEmail(email).get();
+
+        Ponto ponto = pontoService.getPontoByIdAndUsuario(id, usuario);
+
+        if (ponto == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        PontoEditResponseDTO pontoEditResponseDTO = new PontoEditResponseDTO();
+
+        pontoEditResponseDTO.setId(ponto.getId());
+        pontoEditResponseDTO.setDataHoraAbertura(ponto.getDataHoraAbertura());
+        pontoEditResponseDTO.setDataHoraFechamento(ponto.getDataHoraFechamento());
+        pontoEditResponseDTO.setFotoUsuario(usuario.getFoto());
+        pontoEditResponseDTO.setNomeUsuario(usuario.getNome());
+
+        return ResponseEntity.status(HttpStatus.OK).body(pontoEditResponseDTO);
     }
 
     @PostMapping(value = "/ponto")

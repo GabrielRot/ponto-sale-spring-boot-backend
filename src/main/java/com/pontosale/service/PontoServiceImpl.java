@@ -19,13 +19,19 @@ public class PontoServiceImpl implements PontoService {
     PontoRepository pontoRepository;
 
     @Override
-    public List<Ponto> getPontos(Usuario usuario) {
-        return pontoRepository.findAllByUsuario(usuario);
+    public List<Ponto> getAllPontoByUser(Usuario usuario) {
+        return pontoRepository.findAllByUsuarioAndDataHoraFechamentoIsNotNull(usuario);
     }
 
     @Override
+    public Ponto getPontoByIdAndUsuario(Long id, Usuario usuario) {
+        return pontoRepository.findByIdAndUsuario(id, usuario);
+    }
+
+
+    @Override
     public Optional<Ponto> registerPonto(Usuario usuario) {
-        Optional<Ponto> ponto = pontoRepository.getByUsuarioAndDataHoraFechamentoIsEmpty(usuario);
+        Optional<Ponto> ponto = pontoRepository.getByUsuarioAndDataHoraFechamentoIsNull(usuario);
 
         Ponto pontoSave;
 

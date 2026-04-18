@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface PontoService {
 
-    public List<Ponto> getPontos(Usuario usuario);
+    public List<Ponto> getAllPontoByUser(Usuario usuario);
+
+    public Ponto getPontoByIdAndUsuario(Long id, Usuario usuario);
 
     public Optional<Ponto> registerPonto(Usuario usuario);
 
