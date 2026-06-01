@@ -10,6 +10,8 @@ spring:
     username: "pontosale_adm"
     password: "H3@rtDB@#00"
     driver-class-name: org.postgresql.Driver
+  profiles:
+    active: dev
 
 api:
   prefix: /api/v1

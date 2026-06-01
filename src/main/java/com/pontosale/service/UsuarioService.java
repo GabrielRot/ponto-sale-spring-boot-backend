@@ -10,10 +10,14 @@ public interface UsuarioService {
 
 //    List<Usuario> findAll();
 
+    void createDefaultUsers();
+
     void create(UsuarioCreateDTO usuarioCreateDTO, String email);
 
     boolean logTimePoint(byte[] image, String email);
 
     Optional<Usuario> findByEmail(String email);
+    
+    Usuario findById(Long id);
 
 }

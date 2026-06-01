@@ -1,10 +1,18 @@
 package com.pontosale.service;
 
 import com.pontosale.dto.UsuarioCreateDTO;
+import com.pontosale.entity.Role;
+import com.pontosale.entity.RolePermission;
 import com.pontosale.entity.Usuario;
+import com.pontosale.entity.UsuarioRole;
+import com.pontosale.repository.RolePermissionRepository;
+import com.pontosale.repository.RoleRepository;
 import com.pontosale.repository.UsuarioRepository;
+import com.pontosale.repository.UsuarioRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +25,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private UsuarioRoleRepository usuarioRoleRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    RolePermissionRepository rolePermissionRepository;
+
+    @Autowired
     private FaceService faceService;
 
     @Autowired
@@ -26,6 +43,48 @@ public class UsuarioServiceImpl implements UsuarioService {
 //    public List<Usuario> findAll() {
 //        return
 //    }
+
+    @Override
+    public void createDefaultUsers() {
+        if (!usuarioRepository.existsByEmail("admin@gmail.com")) {
+            Usuario usuario = new Usuario();
+
+            usuario.setNome("Admin");
+            usuario.setEmail("admin@gmail.com");
+            usuario.setSenha("123");
+            usuario.setStatus(StatusUsuario.ATIVO);
+            usuario.setCriadoEm(LocalDateTime.now());
+            usuario.setAlteradoEm(LocalDateTime.now());
+
+            usuarioRepository.save(usuario);
+
+            Role role = new Role();
+
+            role.setNome("Admin");
+            role.setDescricao("Administrador do sistema com direito a tudo");
+            role.setCriadoEm(LocalDateTime.now());
+            role.setCriadoPor(usuario);
+
+            roleRepository.save(role);
+
+            for (PermissoesRole permissaoRole : PermissoesRole.values()) {
+                RolePermission rolePermission = new RolePermission();
+
+                rolePermission.setRole(role);
+                rolePermission.setPermissaoRole(permissaoRole);
+
+                rolePermissionRepository.save(rolePermission);
+            }
+
+            UsuarioRole usuarioRole = new UsuarioRole();
+
+            usuarioRole.setUsuario(usuario);
+            usuarioRole.setRole(role);
+
+            usuarioRoleRepository.save(usuarioRole);
+
+        }
+    }
 
     @Override
     public void create(UsuarioCreateDTO usuarioCreateDTO, String email) {
@@ -81,4 +140,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.findByEmail(email);
     }
 
+    @Override
+    public Usuario findById(Long id) { return usuarioRepository.findById(id).get(); }
+    
 }

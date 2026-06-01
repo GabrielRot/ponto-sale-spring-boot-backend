@@ -8,14 +8,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class RoleSaveDTO {
-
-    private Long id;
+public class RoleResponseDTO {
 
     private String nome;
 
     private String descricao;
 
-    private List<PermissoesRole> permissoesRole;
+    private List<PermissoesRole> permissoes;
 
 }

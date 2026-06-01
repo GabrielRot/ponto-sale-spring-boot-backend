@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgres://db:5432/pontosale
+        SPRING_DATASOURCE_URL: jdbc:postgres://db:5432/pontosale
       SPRING_DATASOURCE_USERNAME: pontosale_adm
       SPRING_DATASOURCE_PASSWORD: "H3@rtDB@#00"
     depends_on:

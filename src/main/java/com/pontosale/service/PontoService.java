@@ -21,5 +21,7 @@ public interface PontoService {
     public Optional<Ponto> updatePonto(PontoUpdateDTO pontoUpdateDTO, Usuario usuario);
 
     public void deletePonto(Long id);
+    
+    public byte[] gerarRelatorioPontoByUsuario(Usuario usuario) throws Exception; 
 
 }

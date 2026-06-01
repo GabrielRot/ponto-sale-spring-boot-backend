@@ -3,13 +3,14 @@ package com.pontosale.service;
 public enum PermissoesRole {
 
     CREATE_USER,
-    VIEW_USERS,
-    DELETE_USER,
+    READ_USER,
     UPDATE_USER,
+    DELETE_USER,
 
     CREATE_ROLE,
-    DELETE_ROLE,
+    READ_ROLE,
     UPDATE_ROLE,
+    DELETE_ROLE,
 
     VIEW_ALL_APPOINTMENTS
 

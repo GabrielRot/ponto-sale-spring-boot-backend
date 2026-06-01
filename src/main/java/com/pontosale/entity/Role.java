@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.w3c.dom.Text;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -24,5 +26,19 @@ public class Role {
 
     @Column(name = "DESCRICAO", nullable = true)
     private String descricao;
+
+    @Column(name = "CRIADO_EM", nullable = true)
+    private LocalDateTime criadoEm;
+
+    @ManyToOne
+    @JoinColumn(name = "CRIADO_POR",  nullable = true)
+    private Usuario criadoPor;
+
+    @Column(name = "ALTERADO_EM", nullable = true)
+    private LocalDateTime alteradoEm;
+
+    @ManyToOne
+    @JoinColumn(name = "ALTERADO_POR", nullable = true)
+    private Usuario alteradoPor;
 
 }

@@ -11,7 +11,9 @@ import com.pontosale.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "${api.prefix}/ponto")   
+@RequestMapping(value = "${api.prefix}")   
 public class PontoController {
 
     @Autowired
@@ -31,7 +33,7 @@ public class PontoController {
     @Autowired
     UsuarioService usuarioService;
 
-    @GetMapping(value = "/pontos-user")
+    @GetMapping(value = "ponto/pontos-user")
     public ResponseEntity<List<PontosRegistradosResponseDTO>> getAllPontoByUser(Authentication authentication) {
         final String email = authentication.getName();
 
@@ -58,7 +60,7 @@ public class PontoController {
         return ResponseEntity.status(HttpStatus.OK).body(pontosRegistradosResponseDTOS);
     }
 
-    @GetMapping(value = "/ponto/{id}")
+    @GetMapping(value = "ponto/{id}")
     public ResponseEntity<PontoEditResponseDTO> getPontoById(@PathVariable Long id, Authentication authentication) {
         String email = authentication.getName();
 
@@ -77,11 +79,11 @@ public class PontoController {
         pontoEditResponseDTO.setDataHoraFechamento(ponto.getDataHoraFechamento());
         pontoEditResponseDTO.setFotoUsuario(usuario.getFoto());
         pontoEditResponseDTO.setNomeUsuario(usuario.getNome());
-
+        
         return ResponseEntity.status(HttpStatus.OK).body(pontoEditResponseDTO);
     }
 
-    @PostMapping(value = "/ponto")
+    @PostMapping(value = "ponto")
     public ResponseEntity<Ponto> savePonto(@RequestBody PontoSaveDTO pontoSaveDTO, Authentication authentication) {
         String email = authentication.getName();
 
@@ -118,6 +120,29 @@ public class PontoController {
         pontoService.deletePonto(id);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    
+    @GetMapping("/ponto/relatorio-pdf")
+    public ResponseEntity<byte[]> getPontoPdf(Authentication authentication) throws Exception {
+        Usuario usuario = usuarioService.findByEmail(authentication.getName()).get();
+        
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        
+        byte[] pdf = pontoService.gerarRelatorioPontoByUsuario(usuario);
+        
+        if (pdf == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        
+        return ResponseEntity.ok()
+                .header(
+                    HttpHeaders.CONTENT_DISPOSITION, 
+                    "inline; filename=relatorio-ponto.pdf"
+                )
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 
 }
